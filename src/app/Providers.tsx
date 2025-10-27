@@ -1,15 +1,20 @@
 'use client';
 
+import { ReactNode } from 'react';
+import { SWRConfig } from 'swr';
 import { Provider } from '@/components/ui/provider';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode, useState } from 'react';
+import { fetcher } from '@/lib/fetcher';
 
 export function Providers({ children }: { children: ReactNode }) {
-	const [queryClient] = useState(() => new QueryClient());
-
 	return (
-		<QueryClientProvider client={queryClient}>
+		<SWRConfig
+			value={{
+				fetcher,
+				refreshInterval: 0,
+				revalidateOnFocus: false,
+			}}
+		>
 			<Provider>{children}</Provider>
-		</QueryClientProvider>
+		</SWRConfig>
 	);
 }

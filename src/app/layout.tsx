@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 import { geistMono, geistSans } from './utils/fonts';
-import { Provider } from '@/components/ui/provider';
+import { Providers } from './Providers';
 
 export const metadata: Metadata = {
 	title: 'Travel Hub',
@@ -15,7 +15,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={`${geistSans.variable} ${geistMono.variable}`}>
-				<Provider>{children}</Provider>
+				<Providers>{children}</Providers>
 			</body>
 		</html>
 	);

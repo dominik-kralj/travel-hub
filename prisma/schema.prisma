@@ -1,0 +1,66 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Country {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  code     String    @unique
+  airports Airport[]
+  airlines Airline[]
+}
+
+model Airport {
+  id        Int       @id @default(autoincrement())
+  name      String
+  code      String    @unique
+  latitude  Float
+  longitude Float
+
+  countryId Int
+  country   Country   @relation(fields: [countryId], references: [id])
+
+  servicedBy AirlinesOnAirports[]
+  routesFrom Route[] @relation("RoutesFrom")
+  routesTo   Route[] @relation("RoutesTo")
+}
+
+model Airline {
+  id       Int       @id @default(autoincrement())
+  name     String
+  countryId Int
+  country  Country   @relation(fields: [countryId], references: [id])
+
+  servicedAirports AirlinesOnAirports[]
+  routes          Route[]
+}
+
+model AirlinesOnAirports {
+  id        Int     @id @default(autoincrement())
+  airlineId Int
+  airportId Int
+
+  airline   Airline @relation(fields: [airlineId], references: [id])
+  airport   Airport @relation(fields: [airportId], references: [id])
+
+  @@unique([airlineId, airportId])
+}
+
+model Route {
+  id           Int     @id @default(autoincrement())
+
+  fromAirportId Int
+  fromAirport   Airport @relation("RoutesFrom", fields: [fromAirportId], references: [id])
+
+  toAirportId   Int
+  toAirport     Airport @relation("RoutesTo", fields: [toAirportId], references: [id])
+
+  airlineId     Int
+  airline       Airline @relation(fields: [airlineId], references: [id])
+}
+
