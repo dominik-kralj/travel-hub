@@ -7,20 +7,23 @@ import {
 	CloseButton,
 	Text,
 	useDisclosure,
+	IconButton,
 } from '@chakra-ui/react';
 
-import { Toaster } from '@/components/ui/toaster';
+import { MdDelete } from 'react-icons/md';
+
+import { Toaster } from '@/components/chakra-ui/toaster';
 
 import { useCountries } from '@/app/hooks/useCountries';
 import { Country } from '@/models/Country';
 
-type DeleteCountryDialogProps = {
+type DeleteCountryModalProps = {
 	country: Country;
 };
 
-export default function DeleteCountryDialog({
+export default function DeleteCountryModal({
 	country,
-}: DeleteCountryDialogProps) {
+}: DeleteCountryModalProps) {
 	const { open, onOpen, onClose } = useDisclosure();
 	const { deleteCountry, isCountryDeleting } = useCountries();
 
@@ -48,9 +51,14 @@ export default function DeleteCountryDialog({
 			placement="center"
 		>
 			<Dialog.Trigger asChild>
-				<Button size="sm" colorPalette="red" variant="outline">
-					Delete
-				</Button>
+				<IconButton
+					aria-label="Delete country"
+					size="sm"
+					variant="ghost"
+					color="red.500"
+				>
+					<MdDelete />
+				</IconButton>
 			</Dialog.Trigger>
 
 			<Portal>

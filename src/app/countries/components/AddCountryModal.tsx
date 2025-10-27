@@ -15,7 +15,7 @@ import {
 
 import { CountryDTO, CountrySchema } from '@/models/Country';
 import { useCountries } from '@/app/hooks/useCountries';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/chakra-ui/toaster';
 
 export default function AddCountryModal() {
 	const { open, onOpen, onClose } = useDisclosure();

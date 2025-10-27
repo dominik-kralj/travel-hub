@@ -1,4 +1,4 @@
-import { toaster } from '@/components/ui/toaster';
+import { toaster } from '@/components/chakra-ui/toaster';
 import { fetcher } from '@/lib/fetcher';
 import { Country, CountryDTO } from '@/models/Country';
 import useSWR, { SWRConfiguration } from 'swr';

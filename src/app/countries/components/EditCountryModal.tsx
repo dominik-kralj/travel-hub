@@ -11,9 +11,12 @@ import {
 	Field,
 	CloseButton,
 	useDisclosure,
+	IconButton,
 } from '@chakra-ui/react';
 
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/chakra-ui/toaster';
+
+import { MdEdit } from 'react-icons/md';
 
 import { Country, CountryDTO, CountrySchema } from '@/models/Country';
 import { useCountries } from '@/app/hooks/useCountries';
@@ -65,9 +68,9 @@ export default function EditCountryModal({ country }: EditCountryModalProps) {
 			placement="center"
 		>
 			<Dialog.Trigger asChild>
-				<Button size="sm" variant="outline">
-					Edit
-				</Button>
+				<IconButton aria-label="Edit country" size="sm" variant="ghost">
+					<MdEdit />
+				</IconButton>
 			</Dialog.Trigger>
 
 			<Portal>
