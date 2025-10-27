@@ -18,9 +18,9 @@ import DeleteCountryModal from './components/DeleteCountryModal';
 import { BackButton } from '@/components/ui/BackButton';
 
 export default function CountriesPage() {
-	const { countries, isCountriesLoading, countriesError } = useCountries();
+	const { data, isLoading, error } = useCountries();
 
-	if (isCountriesLoading) {
+	if (isLoading) {
 		return (
 			<AbsoluteCenter>
 				<Spinner size="xl" color="blue" />
@@ -28,7 +28,7 @@ export default function CountriesPage() {
 		);
 	}
 
-	if (countriesError) {
+	if (error) {
 		return (
 			<AbsoluteCenter>
 				<Text color="red">Error while fetching countries!</Text>
@@ -59,7 +59,7 @@ export default function CountriesPage() {
 			</Box>
 
 			<DataTable
-				data={countries ?? []}
+				data={data ?? []}
 				columns={[
 					{ header: 'Name', cell: (row) => row.name },
 					{ header: 'Code', cell: (row) => row.code },

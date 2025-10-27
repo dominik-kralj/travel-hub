@@ -12,14 +12,20 @@ import {
 	CloseButton,
 	useDisclosure,
 } from '@chakra-ui/react';
+import { useTransition } from 'react';
 
 import { CountryDTO, CountrySchema } from '@/models/Country';
+import { Toaster, toaster } from '@/components/chakra-ui/toaster';
+import { createCountry } from '../actions';
 import { useCountries } from '@/app/hooks/useCountries';
-import { Toaster } from '@/components/chakra-ui/toaster';
+import { Error } from '@/models/Error';
 
 export default function AddCountryModal() {
 	const { open, onOpen, onClose } = useDisclosure();
-	const { createCountry, isCountryCreating } = useCountries();
+	const { mutate } = useCountries();
+
+	// React 18+ useTransition for SWR-style loading
+	const [isPending, startTransition] = useTransition();
 
 	const {
 		register,
@@ -32,11 +38,24 @@ export default function AddCountryModal() {
 		mode: 'onTouched',
 	});
 
-	const onCountrySubmit = async (data: CountryDTO) => {
-		await createCountry(data);
-
-		reset();
-		onClose();
+	const onCountrySubmit = (data: CountryDTO) => {
+		startTransition(async () => {
+			try {
+				await createCountry(data);
+				toaster.create({
+					title: 'Country created successfully!',
+					type: 'success',
+				});
+				await mutate(); // refresh the countries list
+				reset();
+				onClose();
+			} catch (error: unknown) {
+				toaster.create({
+					title: (error as Error) || 'Failed to create a country!',
+					type: 'error',
+				});
+			}
+		});
 	};
 
 	const handleOpenChange = (details: { open: boolean }) => {
@@ -78,12 +97,10 @@ export default function AddCountryModal() {
 										}
 									>
 										<Field.Label>Country Name</Field.Label>
-
 										<Input
 											placeholder="e.g., United States"
 											{...register('name')}
 										/>
-
 										{errors.name && touchedFields.name && (
 											<Field.ErrorText>
 												{errors.name.message}
@@ -97,19 +114,16 @@ export default function AddCountryModal() {
 										}
 									>
 										<Field.Label>Country Code</Field.Label>
-
 										<Input
 											placeholder="e.g., US or USA"
 											{...register('code')}
 											textTransform="uppercase"
 										/>
-
 										{errors.code && touchedFields.code && (
 											<Field.ErrorText>
 												{errors.code.message}
 											</Field.ErrorText>
 										)}
-
 										<Field.HelperText>
 											2-3 character country code (ISO
 											format)
@@ -126,8 +140,8 @@ export default function AddCountryModal() {
 								<Button
 									type="submit"
 									colorPalette="blue"
-									loading={isCountryCreating}
-									disabled={!isValid || isCountryCreating}
+									disabled={!isValid || isPending}
+									loading={isPending}
 								>
 									Save
 								</Button>

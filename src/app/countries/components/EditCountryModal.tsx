@@ -13,13 +13,14 @@ import {
 	useDisclosure,
 	IconButton,
 } from '@chakra-ui/react';
-
-import { Toaster } from '@/components/chakra-ui/toaster';
-
+import { useTransition } from 'react';
 import { MdEdit } from 'react-icons/md';
 
+import { Toaster, toaster } from '@/components/chakra-ui/toaster';
 import { Country, CountryDTO, CountrySchema } from '@/models/Country';
+import { updateCountry } from '../actions';
 import { useCountries } from '@/app/hooks/useCountries';
+import { Error } from '@/models/Error';
 
 type EditCountryModalProps = {
 	country: Country;
@@ -27,7 +28,9 @@ type EditCountryModalProps = {
 
 export default function EditCountryModal({ country }: EditCountryModalProps) {
 	const { open, onClose, onOpen } = useDisclosure();
-	const { updateCountry, isCountryUpdating } = useCountries();
+	const { mutate } = useCountries();
+
+	const [isPending, startTransition] = useTransition();
 
 	const {
 		register,
@@ -43,13 +46,23 @@ export default function EditCountryModal({ country }: EditCountryModalProps) {
 		mode: 'onTouched',
 	});
 
-	const onCountrySubmit = async (data: CountryDTO) => {
-		try {
-			await updateCountry({ id: country.id, data });
-			onClose();
-		} catch (error) {
-			console.error('Failed to update country:', error);
-		}
+	const onCountrySubmit = (data: CountryDTO) => {
+		startTransition(async () => {
+			try {
+				await updateCountry(country.id, data);
+				await mutate();
+				toaster.create({
+					title: 'Country updated successfully!',
+					type: 'success',
+				});
+				onClose();
+			} catch (error: unknown) {
+				toaster.create({
+					title: (error as Error) || 'Failed to update country!',
+					type: 'error',
+				});
+			}
+		});
 	};
 
 	const handleOpenChange = (details: { open: boolean }) => {
@@ -132,8 +145,8 @@ export default function EditCountryModal({ country }: EditCountryModalProps) {
 								<Button
 									type="submit"
 									colorPalette="blue"
-									loading={isCountryUpdating}
-									disabled={!isValid || isCountryUpdating}
+									loading={isPending}
+									disabled={!isValid || isPending}
 								>
 									Update
 								</Button>

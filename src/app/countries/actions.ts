@@ -14,12 +14,7 @@ export async function createCountry(data: CountryDTO) {
 	revalidatePath('/countries');
 }
 
-export async function updateCountry(id: number, formData: FormData) {
-	const data = {
-		name: formData.get('name'),
-		code: formData.get('code'),
-	};
-
+export async function updateCountry(id: number, data: CountryDTO) {
 	const validatedData = CountrySchema.parse(data);
 
 	await prisma.country.update({

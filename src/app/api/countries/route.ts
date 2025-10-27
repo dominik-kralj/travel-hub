@@ -39,7 +39,9 @@ export async function POST(request: NextRequest) {
 				{ status: 400 },
 			);
 		}
+
 		console.error('Failed to create country:', error);
+
 		return NextResponse.json(
 			{ message: 'Failed to create country' },
 			{ status: 500 },

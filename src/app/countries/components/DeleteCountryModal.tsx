@@ -9,13 +9,14 @@ import {
 	useDisclosure,
 	IconButton,
 } from '@chakra-ui/react';
-
 import { MdDelete } from 'react-icons/md';
+import { useTransition } from 'react';
 
-import { Toaster } from '@/components/chakra-ui/toaster';
-
-import { useCountries } from '@/app/hooks/useCountries';
+import { Toaster, toaster } from '@/components/chakra-ui/toaster';
 import { Country } from '@/models/Country';
+import { deleteCountry } from '../actions';
+import { useCountries } from '@/app/hooks/useCountries';
+import { Error } from '@/models/Error';
 
 type DeleteCountryModalProps = {
 	country: Country;
@@ -25,15 +26,27 @@ export default function DeleteCountryModal({
 	country,
 }: DeleteCountryModalProps) {
 	const { open, onOpen, onClose } = useDisclosure();
-	const { deleteCountry, isCountryDeleting } = useCountries();
+	const { mutate } = useCountries();
 
-	const handleDelete = async () => {
-		try {
-			await deleteCountry(country.id);
-			onClose();
-		} catch (error) {
-			console.error('Failed to delete country:', error);
-		}
+	const [isPending, startTransition] = useTransition();
+
+	const handleDelete = () => {
+		startTransition(async () => {
+			try {
+				await deleteCountry(country.id);
+				await mutate();
+				toaster.create({
+					title: 'Country deleted successfully!',
+					type: 'success',
+				});
+				onClose();
+			} catch (error: unknown) {
+				toaster.create({
+					title: (error as Error) || 'Failed to delete country!',
+					type: 'error',
+				});
+			}
+		});
 	};
 
 	const handleOpenChange = (details: { open: boolean }) => {
@@ -88,8 +101,8 @@ export default function DeleteCountryModal({
 							<Button
 								colorPalette="red"
 								onClick={handleDelete}
-								loading={isCountryDeleting}
-								disabled={isCountryDeleting}
+								loading={isPending}
+								disabled={isPending}
 							>
 								Delete
 							</Button>
