@@ -12,6 +12,7 @@ import {
 	CloseButton,
 	useDisclosure,
 	IconButton,
+	DialogOpenChangeDetails,
 } from '@chakra-ui/react';
 import { useTransition } from 'react';
 import { MdEdit } from 'react-icons/md';
@@ -35,7 +36,7 @@ export default function EditCountryModal({ country }: EditCountryModalProps) {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, touchedFields, isValid },
+		formState: { errors, touchedFields, isValid, isDirty },
 		reset,
 	} = useForm<CountryDTO>({
 		resolver: zodResolver(CountrySchema),
@@ -65,12 +66,12 @@ export default function EditCountryModal({ country }: EditCountryModalProps) {
 		});
 	};
 
-	const handleOpenChange = (details: { open: boolean }) => {
+	const handleOpenChange = (details: DialogOpenChangeDetails) => {
 		if (details.open) {
 			onOpen();
+			reset({ name: country.name, code: country.code });
 		} else {
 			onClose();
-			reset({ name: country.name, code: country.code });
 		}
 	};
 
@@ -146,7 +147,7 @@ export default function EditCountryModal({ country }: EditCountryModalProps) {
 									type="submit"
 									colorPalette="blue"
 									loading={isPending}
-									disabled={!isValid || isPending}
+									disabled={!isValid || !isDirty || isPending}
 								>
 									Update
 								</Button>

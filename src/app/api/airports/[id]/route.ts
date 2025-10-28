@@ -1,23 +1,24 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { CountrySchema } from '@/models/Country';
+import { AirportSchema } from '@/models/Airport';
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
 	try {
-		const country = await prisma.country.findUnique({
+		const airport = await prisma.airport.findUnique({
 			where: { id: Number(params.id) },
+			include: { country: true },
 		});
-		if (!country) {
+		if (!airport) {
 			return NextResponse.json(
-				{ error: 'Country not found' },
+				{ error: 'Airport not found' },
 				{ status: 404 },
 			);
 		}
-		return NextResponse.json(country);
+		return NextResponse.json(airport);
 	} catch (error) {
-		console.error('[GET /countries/:id] Error:', error);
+		console.error('[GET /airports/:id] Error:', error);
 		return NextResponse.json(
-			{ error: 'Failed to fetch country' },
+			{ error: 'Failed to fetch airport' },
 			{ status: 500 },
 		);
 	}
@@ -29,18 +30,18 @@ export async function PUT(
 ) {
 	try {
 		const body = await request.json();
-		const parsed = CountrySchema.parse(body);
+		const parsed = AirportSchema.parse(body);
 
-		const updated = await prisma.country.update({
+		const updated = await prisma.airport.update({
 			where: { id: Number(params.id) },
 			data: parsed,
 		});
 
 		return NextResponse.json(updated);
 	} catch (error) {
-		console.error('[PUT /countries/:id] Error:', error);
+		console.error('[PUT /airports/:id] Error:', error);
 		return NextResponse.json(
-			{ error: 'Failed to update country' },
+			{ error: 'Failed to update airport' },
 			{ status: 500 },
 		);
 	}
@@ -51,12 +52,12 @@ export async function DELETE(
 	{ params }: { params: { id: string } },
 ) {
 	try {
-		await prisma.country.delete({ where: { id: Number(params.id) } });
-		return NextResponse.json({ message: 'Country deleted successfully' });
+		await prisma.airport.delete({ where: { id: Number(params.id) } });
+		return NextResponse.json({ message: 'Airport deleted successfully' });
 	} catch (error) {
-		console.error('[DELETE /countries/:id] Error:', error);
+		console.error('[DELETE /airports/:id] Error:', error);
 		return NextResponse.json(
-			{ error: 'Failed to delete country' },
+			{ error: 'Failed to delete airport' },
 			{ status: 500 },
 		);
 	}

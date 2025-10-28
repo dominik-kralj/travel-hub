@@ -2,20 +2,18 @@
 
 import {
 	AbsoluteCenter,
-	Box,
 	Flex,
-	Heading,
 	Spinner,
 	Text,
 } from '@chakra-ui/react';
 
-import { DataTable } from '@/components/ui/DataTable';
-import { useCountries } from '@/app/hooks/useCountries';
-
 import AddCountryModal from './components/AddCountryModal';
 import EditCountryModal from './components/EditCountryModal';
 import DeleteCountryModal from './components/DeleteCountryModal';
-import { BackButton } from '@/components/ui/BackButton';
+import DataTable from '@/components/ui/DataTable';
+
+import { useCountries } from '@/app/hooks/useCountries';
+import { CrudPageLayout } from '@/components/ui/CrudPageLayout';
 
 export default function CountriesPage() {
 	const { data, isLoading, error } = useCountries();
@@ -37,29 +35,9 @@ export default function CountriesPage() {
 	}
 
 	return (
-		<Box p={6}>
-			<Box
-				bg="gray.50"
-				borderRadius="lg"
-				borderWidth="1px"
-				p={4}
-				mb={6}
-				display="flex"
-				justifyContent="space-between"
-				alignItems="center"
-				boxShadow="sm"
-			>
-				<BackButton />
-
-				<Heading size="lg" color="blue.700" letterSpacing="tight">
-					Countries
-				</Heading>
-
-				<AddCountryModal />
-			</Box>
-
+		<CrudPageLayout title="Countries" actions={<AddCountryModal />}>
 			<DataTable
-				data={data ?? []}
+				data={data}
 				columns={[
 					{ header: 'Name', cell: (row) => row.name },
 					{ header: 'Code', cell: (row) => row.code },
@@ -76,6 +54,6 @@ export default function CountriesPage() {
 					},
 				]}
 			/>
-		</Box>
+		</CrudPageLayout>
 	);
 }

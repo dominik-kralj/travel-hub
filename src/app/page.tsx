@@ -16,14 +16,23 @@ export default function Home() {
 			<Box
 				bgImage="linear-gradient(90deg, #2563eb 0%, #14b8a6 100%)"
 				color="white"
-				py={20}
+				py={{ base: 12, md: 20 }}
+				px={{ base: 4, md: 0 }}
 				textAlign="center"
 			>
-				<Heading size="2xl" mb={4}>
+				<Heading
+					size={{ base: 'xl', md: '2xl' }}
+					mb={{ base: 2, md: 4 }}
+					lineHeight={{ base: 'short', md: 'shorter' }}
+				>
 					Welcome to Travel Hub
 				</Heading>
 
-				<Text fontSize="xl">
+				<Text
+					fontSize={{ base: 'md', md: 'xl' }}
+					maxW={{ base: 'full', md: '2xl' }}
+					mx="auto"
+				>
 					Your all-in-one platform for managing countries, airports,
 					airlines, and routes.
 				</Text>

@@ -28,7 +28,7 @@ type DataTableProps<T> = {
 	actions?: ReactNode;
 };
 
-export function DataTable<T>({
+export default function DataTable<T>({
 	data,
 	columns,
 	pageSize = 10,

@@ -8,6 +8,7 @@ import {
 	Text,
 	useDisclosure,
 	IconButton,
+	DialogOpenChangeDetails,
 } from '@chakra-ui/react';
 import { MdDelete } from 'react-icons/md';
 import { useTransition } from 'react';
@@ -49,7 +50,7 @@ export default function DeleteCountryModal({
 		});
 	};
 
-	const handleOpenChange = (details: { open: boolean }) => {
+	const handleOpenChange = (details: DialogOpenChangeDetails) => {
 		if (details.open) {
 			onOpen();
 		} else {

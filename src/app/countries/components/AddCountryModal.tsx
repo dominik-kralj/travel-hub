@@ -11,6 +11,7 @@ import {
 	Field,
 	CloseButton,
 	useDisclosure,
+	DialogOpenChangeDetails,
 } from '@chakra-ui/react';
 import { useTransition } from 'react';
 
@@ -58,7 +59,7 @@ export default function AddCountryModal() {
 		});
 	};
 
-	const handleOpenChange = (details: { open: boolean }) => {
+	const handleOpenChange = (details: DialogOpenChangeDetails) => {
 		if (details.open) {
 			onOpen();
 		} else {

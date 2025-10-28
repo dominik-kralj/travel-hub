@@ -9,7 +9,7 @@ export function useCountries() {
 	);
 
 	return {
-		data,
+		data: data ?? [],
 		isLoading,
 		error,
 		mutate,
