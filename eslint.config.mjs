@@ -1,46 +1,29 @@
-import { FlatCompat } from '@eslint/eslintrc';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import prettier from 'eslint-config-prettier/flat';
+import prettierPlugin from 'eslint-plugin-prettier';
+import unusedImports from 'eslint-plugin-unused-imports';
 
-const compat = new FlatCompat({
-	// import.meta.dirname is available after Node.js v20.11.0
-	baseDirectory: import.meta.dirname,
-});
-
-const eslintConfig = [
-	...compat.config({
-		extends: [
-			'next',
-			'next/core-web-vitals',
-			'next/typescript',
-			'plugin:prettier/recommended',
-			'plugin:jsx-a11y/recommended',
-		],
-		plugins: ['prettier', 'jsx-a11y'],
-		rules: {
-			'prettier/prettier': [
-				'error',
-				{
-					useTabs: true,
-					trailingComma: 'all',
-					semi: true,
-					tabWidth: 4,
-					singleQuote: true,
-					printWidth: 80,
-					endOfLine: 'auto',
-					arrowParens: 'always',
-				},
-				{
-					usePrettierrc: false,
-				},
-			],
-			'react/react-in-jsx-scope': 'off',
-			'jsx-a11y/alt-text': 'warn',
-			'jsx-a11y/aria-props': 'warn',
-			'jsx-a11y/aria-proptypes': 'warn',
-			'jsx-a11y/aria-unsupported-elements': 'warn',
-			'jsx-a11y/role-has-required-aria-props': 'warn',
-			'jsx-a11y/role-supports-aria-props': 'warn',
-		},
-	}),
-];
+const eslintConfig = defineConfig([
+    ...nextVitals,
+    prettier,
+    {
+        plugins: { prettier: prettierPlugin, 'unused-imports': unusedImports },
+        rules: {
+            'prettier/prettier': 'error',
+            'unused-imports/no-unused-imports': 'error',
+            'unused-imports/no-unused-vars': [
+                'warn',
+                {
+                    vars: 'all',
+                    varsIgnorePattern: '^_',
+                    args: 'after-used',
+                    argsIgnorePattern: '^_',
+                },
+            ],
+        },
+    },
+    globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
+]);
 
 export default eslintConfig;

@@ -1,315 +1,272 @@
 'use client';
 
-import { Controller, useForm } from 'react-hook-form';
+import { useTransition } from 'react';
+
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+
 import {
-	Button,
-	Input,
-	Dialog,
-	Portal,
-	Stack,
-	Field,
-	CloseButton,
-	useDisclosure,
-	DialogOpenChangeDetails,
+    Button,
+    Input,
+    Dialog,
+    Portal,
+    Stack,
+    Field,
+    CloseButton,
+    useDisclosure,
+    DialogOpenChangeDetails,
 } from '@chakra-ui/react';
-import { useEffect, useTransition } from 'react';
+
+import { createAirport } from '../actions';
+
+import { useCountries } from '@/app/hooks/useCountries';
+import { useAirports } from '@/app/hooks/useAirports';
+import { useCurrentPosition } from '@/app/hooks/useCurrentPosition';
 
 import { Toaster, toaster } from '@/components/chakra-ui/toaster';
-import { createAirport } from '../actions';
-import { useAirports } from '@/app/hooks/useAirports';
+
 import { AirportDTO, AirportSchema } from '@/models/Airport';
 import { Error } from '@/models/Error';
+
 import { CountrySelect } from './CountrySelect';
 import { MapPicker } from './MapPicker';
-import { useCountries } from '@/app/hooks/useCountries';
 
 export default function AddAirportModal() {
-	const { open, onOpen, onClose } = useDisclosure();
-	const { mutate } = useAirports();
-	const { data } = useCountries();
+    const { open, onOpen, onClose } = useDisclosure();
+    const { mutate } = useAirports();
+    const { data } = useCountries();
 
-	const [isPending, startTransition] = useTransition();
+    const [isPending, startTransition] = useTransition();
 
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		control,
-		watch,
-		formState: { errors, touchedFields, isValid },
-		reset,
-	} = useForm<AirportDTO>({
-		resolver: zodResolver(AirportSchema),
-		defaultValues: {
-			name: '',
-			iata: '',
-			latitude: 0,
-			longitude: 0,
-			countryId: 0,
-		},
-		mode: 'onTouched',
-	});
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        control,
+        formState: { errors, touchedFields, isValid },
+        reset,
+    } = useForm<AirportDTO>({
+        resolver: zodResolver(AirportSchema),
+        defaultValues: {
+            name: '',
+            iata: '',
+            latitude: 0,
+            longitude: 0,
+            countryId: 0,
+        },
+        mode: 'onTouched',
+    });
 
-	useEffect(() => {
-		navigator.geolocation.getCurrentPosition((position) => {
-			setValue('latitude', position.coords.latitude);
-			setValue('longitude', position.coords.longitude);
-		});
-	}, [setValue]);
+    useCurrentPosition({
+        onPosition: (latitude, longitude) => {
+            setValue('latitude', latitude);
+            setValue('longitude', longitude);
+        },
+    });
 
-	const latitude = watch('latitude');
-	const longitude = watch('longitude');
+    const latitude = useWatch({ control, name: 'latitude' });
+    const longitude = useWatch({ control, name: 'longitude' });
 
-	const onAirportSubmit = (data: AirportDTO) => {
-		startTransition(async () => {
-			try {
-				await createAirport(data);
-				toaster.create({
-					title: 'Airport created successfully!',
-					type: 'success',
-				});
-				await mutate();
-				reset();
-				onClose();
-			} catch (error: unknown) {
-				toaster.create({
-					title:
-						(error as Error)?.message ||
-						'Failed to create airport!',
-					type: 'error',
-				});
-			}
-		});
-	};
+    const onAirportSubmit = (data: AirportDTO) => {
+        startTransition(async () => {
+            try {
+                await createAirport(data);
+                await mutate();
 
-	const handleOpenChange = (details: DialogOpenChangeDetails) => {
-		if (details.open) {
-			onOpen();
-		} else {
-			onClose();
-			reset();
-		}
-	};
+                toaster.create({
+                    title: 'Airport created successfully!',
+                    type: 'success',
+                });
 
-	return (
-		<Dialog.Root
-			open={open}
-			onOpenChange={handleOpenChange}
-			placement="center"
-		>
-			<Dialog.Trigger asChild>
-				<Button colorPalette="blue">Add Airport</Button>
-			</Dialog.Trigger>
+                reset();
+                onClose();
+            } catch (error: unknown) {
+                toaster.create({
+                    title: (error as Error)?.message || 'Failed to create airport!',
+                    type: 'error',
+                });
+            }
+        });
+    };
 
-			<Portal>
-				<Dialog.Backdrop />
+    const handleOpenChange = (details: DialogOpenChangeDetails) => {
+        if (details.open) {
+            onOpen();
+        } else {
+            onClose();
+            reset();
+        }
+    };
 
-				<Dialog.Positioner>
-					<Dialog.Content>
-						<Dialog.CloseTrigger asChild>
-							<CloseButton size="sm" />
-						</Dialog.CloseTrigger>
+    return (
+        <Dialog.Root open={open} onOpenChange={handleOpenChange} placement="center">
+            <Dialog.Trigger asChild>
+                <Button colorPalette="blue">Add Airport</Button>
+            </Dialog.Trigger>
 
-						<form onSubmit={handleSubmit(onAirportSubmit)}>
-							<Dialog.Header>Add Airport</Dialog.Header>
+            <Portal>
+                <Dialog.Backdrop />
 
-							<Dialog.Body>
-								<Stack gap={4}>
-									<Field.Root
-										invalid={
-											!!errors.name && touchedFields.name
-										}
-									>
-										<Field.Label>Name</Field.Label>
+                <Dialog.Positioner>
+                    <Dialog.Content>
+                        <Dialog.CloseTrigger asChild>
+                            <CloseButton size="sm" />
+                        </Dialog.CloseTrigger>
 
-										<Input
-											placeholder="e.g., John F. Kennedy International"
-											{...register('name')}
-										/>
+                        <form onSubmit={handleSubmit(onAirportSubmit)}>
+                            <Dialog.Header>Add Airport</Dialog.Header>
 
-										{errors.name && touchedFields.name && (
-											<Field.ErrorText>
-												{errors.name.message}
-											</Field.ErrorText>
-										)}
-									</Field.Root>
+                            <Dialog.Body>
+                                <Stack gap={4}>
+                                    <Field.Root invalid={!!errors.name && touchedFields.name}>
+                                        <Field.Label>Name</Field.Label>
 
-									<Field.Root
-										invalid={
-											!!errors.iata && touchedFields.iata
-										}
-									>
-										<Field.Label>IATA Code</Field.Label>
+                                        <Input
+                                            placeholder="e.g., John F. Kennedy International"
+                                            {...register('name')}
+                                        />
 
-										<Input
-											placeholder="e.g., JFK"
-											{...register('iata')}
-											textTransform="uppercase"
-										/>
+                                        {errors.name && touchedFields.name && (
+                                            <Field.ErrorText>{errors.name.message}</Field.ErrorText>
+                                        )}
+                                    </Field.Root>
 
-										{errors.iata && touchedFields.iata && (
-											<Field.ErrorText>
-												{errors.iata.message}
-											</Field.ErrorText>
-										)}
+                                    <Field.Root invalid={!!errors.iata && touchedFields.iata}>
+                                        <Field.Label>IATA Code</Field.Label>
 
-										<Field.HelperText>
-											3-letter airport code
-										</Field.HelperText>
-									</Field.Root>
+                                        <Input
+                                            placeholder="e.g., JFK"
+                                            {...register('iata')}
+                                            textTransform="uppercase"
+                                        />
 
-									<Field.Root
-										invalid={
-											!!errors.icao && touchedFields.icao
-										}
-									>
-										<Field.Label>ICAO Code</Field.Label>
+                                        {errors.iata && touchedFields.iata && (
+                                            <Field.ErrorText>{errors.iata.message}</Field.ErrorText>
+                                        )}
 
-										<Input
-											placeholder="e.g., KJFK"
-											{...register('icao')}
-											textTransform="uppercase"
-										/>
+                                        <Field.HelperText>3-letter airport code</Field.HelperText>
+                                    </Field.Root>
 
-										{errors.icao && touchedFields.icao && (
-											<Field.ErrorText>
-												{errors.icao.message}
-											</Field.ErrorText>
-										)}
+                                    <Field.Root invalid={!!errors.icao && touchedFields.icao}>
+                                        <Field.Label>ICAO Code</Field.Label>
 
-										<Field.HelperText>
-											4-letter ICAO airport code
-										</Field.HelperText>
-									</Field.Root>
+                                        <Input
+                                            placeholder="e.g., KJFK"
+                                            {...register('icao')}
+                                            textTransform="uppercase"
+                                        />
 
-									<Field.Root
-										invalid={
-											!!errors.latitude &&
-											touchedFields.latitude
-										}
-									>
-										<Field.Label>Latitude</Field.Label>
+                                        {errors.icao && touchedFields.icao && (
+                                            <Field.ErrorText>{errors.icao.message}</Field.ErrorText>
+                                        )}
 
-										<Input
-											type="number"
-											step="any"
-											{...register('latitude', { valueAsNumber: true })}
-											
-										/>
+                                        <Field.HelperText>
+                                            4-letter ICAO airport code
+                                        </Field.HelperText>
+                                    </Field.Root>
 
-										{errors.latitude &&
-											touchedFields.latitude && (
-												<Field.ErrorText>
-													{errors.latitude.message}
-												</Field.ErrorText>
-											)}
-									</Field.Root>
+                                    <Field.Root
+                                        invalid={!!errors.latitude && touchedFields.latitude}
+                                    >
+                                        <Field.Label>Latitude</Field.Label>
 
-									<Field.Root
-										invalid={
-											!!errors.longitude &&
-											touchedFields.longitude
-										}
-									>
-										<Field.Label>Longitude</Field.Label>
+                                        <Input
+                                            type="number"
+                                            step="any"
+                                            {...register('latitude', { valueAsNumber: true })}
+                                        />
 
-										<Input
-											type="number"
-											step="any"
-											{...register('longitude', { valueAsNumber: true })}
-										/>
+                                        {errors.latitude && touchedFields.latitude && (
+                                            <Field.ErrorText>
+                                                {errors.latitude.message}
+                                            </Field.ErrorText>
+                                        )}
+                                    </Field.Root>
 
-										{errors.longitude &&
-											touchedFields.longitude && (
-												<Field.ErrorText>
-													{errors.longitude.message}
-												</Field.ErrorText>
-											)}
-									</Field.Root>
+                                    <Field.Root
+                                        invalid={!!errors.longitude && touchedFields.longitude}
+                                    >
+                                        <Field.Label>Longitude</Field.Label>
 
-									<Field.Root
-										invalid={
-											!!errors.countryId &&
-											touchedFields.countryId
-										}
-									>
-										<Controller
-											control={control}
-											name="countryId"
-											render={({ field }) => (
-											<CountrySelect
-												data={data}
-												value={field.value ? field.value.toString() : ''}
-												onChange={val => field.onChange(val ? Number(val) : 0)}
-											/>
-											)}
-										/>
+                                        <Input
+                                            type="number"
+                                            step="any"
+                                            {...register('longitude', { valueAsNumber: true })}
+                                        />
 
-										{errors.countryId &&
-											touchedFields.countryId && (
-												<Field.ErrorText>
-													{errors.countryId.message}
-												</Field.ErrorText>
-											)}
-									</Field.Root>
+                                        {errors.longitude && touchedFields.longitude && (
+                                            <Field.ErrorText>
+                                                {errors.longitude.message}
+                                            </Field.ErrorText>
+                                        )}
+                                    </Field.Root>
 
-									<Field.Root
-										invalid={
-											!!errors.latitude &&
-											touchedFields.latitude
-										}
-									>
-										<Field.Label>
-											Location (click on map)
-										</Field.Label>
+                                    <Field.Root
+                                        invalid={!!errors.countryId && touchedFields.countryId}
+                                    >
+                                        <Controller
+                                            control={control}
+                                            name="countryId"
+                                            render={({ field }) => (
+                                                <CountrySelect
+                                                    data={data}
+                                                    value={
+                                                        field.value ? field.value.toString() : ''
+                                                    }
+                                                    onChange={(val) =>
+                                                        field.onChange(val ? Number(val) : 0)
+                                                    }
+                                                />
+                                            )}
+                                        />
 
-										<MapPicker
-											lat={latitude}
-											lng={longitude}
-											setLat={(val) =>
-												setValue(
-													'latitude',
-													Number(val),
-												)
-											}
-											setLng={(val) =>
-												setValue(
-													'longitude',
-													Number(val),
-												)
-											}
-										/>
+                                        {errors.countryId && touchedFields.countryId && (
+                                            <Field.ErrorText>
+                                                {errors.countryId.message}
+                                            </Field.ErrorText>
+                                        )}
+                                    </Field.Root>
 
-										{errors.latitude &&
-											touchedFields.latitude && (
-												<Field.ErrorText>
-													{errors.latitude.message}
-												</Field.ErrorText>
-											)}
-									</Field.Root>
-								</Stack>
-							</Dialog.Body>
+                                    <Field.Root
+                                        invalid={!!errors.latitude && touchedFields.latitude}
+                                    >
+                                        <Field.Label>Location (click on map)</Field.Label>
 
-							<Dialog.Footer>
-								<Dialog.ActionTrigger asChild>
-									<Button variant="outline">Cancel</Button>
-								</Dialog.ActionTrigger>
+                                        <MapPicker
+                                            lat={latitude}
+                                            lng={longitude}
+                                            setLat={(val) => setValue('latitude', Number(val))}
+                                            setLng={(val) => setValue('longitude', Number(val))}
+                                        />
 
-								<Button
-									type="submit"
-									colorPalette="blue"
-									disabled={!isValid || isPending}
-									loading={isPending}
-								>
-									Save
-								</Button>
-							</Dialog.Footer>
-						</form>
-					</Dialog.Content>
-				</Dialog.Positioner>
-			</Portal>
-			<Toaster />
-		</Dialog.Root>
-	);
+                                        {errors.latitude && touchedFields.latitude && (
+                                            <Field.ErrorText>
+                                                {errors.latitude.message}
+                                            </Field.ErrorText>
+                                        )}
+                                    </Field.Root>
+                                </Stack>
+                            </Dialog.Body>
+
+                            <Dialog.Footer>
+                                <Dialog.ActionTrigger asChild>
+                                    <Button variant="outline">Cancel</Button>
+                                </Dialog.ActionTrigger>
+
+                                <Button
+                                    type="submit"
+                                    colorPalette="blue"
+                                    disabled={!isValid || isPending}
+                                    loading={isPending}
+                                >
+                                    Save
+                                </Button>
+                            </Dialog.Footer>
+                        </form>
+                    </Dialog.Content>
+                </Dialog.Positioner>
+            </Portal>
+            <Toaster />
+        </Dialog.Root>
+    );
 }
