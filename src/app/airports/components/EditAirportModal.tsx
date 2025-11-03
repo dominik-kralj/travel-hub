@@ -85,6 +85,14 @@ export default function EditAirportModal({ airport }: EditAirportModalProps) {
     const handleOpenChange = (details: DialogOpenChangeDetails) => {
         if (details.open) {
             onOpen();
+            reset({
+                name: airport.name,
+                iata: airport.iata,
+                icao: airport.icao,
+                latitude: airport.latitude,
+                longitude: airport.longitude,
+                countryId: airport.countryId,
+            });
         } else {
             onClose();
             reset();

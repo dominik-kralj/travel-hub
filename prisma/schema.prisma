@@ -18,8 +18,8 @@ model Country {
 model Airport {
   id        Int     @id @default(autoincrement())
   name      String
-  iata      String  @unique
-  icao      String  @unique @default("TEMP")
+  iata      String? @unique
+  icao      String  @unique
   latitude  Float
   longitude Float
   countryId Int
