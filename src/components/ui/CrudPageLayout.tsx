@@ -1,12 +1,13 @@
-import { Box, Heading, Text, HStack } from '@chakra-ui/react';
+import { Box, Heading } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import BackButton from './BackButton';
+import Footer from './Footer';
 
-type CrudPageLayoutProps = {
+interface CrudPageLayoutProps {
     title: string;
     actions?: ReactNode;
     children: ReactNode;
-};
+}
 
 export function CrudPageLayout({ title, actions, children }: CrudPageLayoutProps) {
     return (
@@ -35,21 +36,7 @@ export function CrudPageLayout({ title, actions, children }: CrudPageLayoutProps
                 {children}
             </Box>
 
-            <Box
-                as="footer"
-                bg="gray.100"
-                borderTopWidth="1px"
-                borderColor="gray.200"
-                py={4}
-                px={6}
-                mt="auto"
-            >
-                <HStack justify="center" align="center">
-                    <Text fontSize="sm" color="gray.600" textAlign="center">
-                        © {new Date().getFullYear()} Travel Hub. All rights reserved.
-                    </Text>
-                </HStack>
-            </Box>
+            <Footer />
         </Box>
     );
 }

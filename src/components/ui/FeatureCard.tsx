@@ -3,11 +3,11 @@ import Link from 'next/link';
 
 import { IconType } from 'react-icons/lib';
 
-type FeatureCardProps = {
+interface FeatureCardProps {
     icon: IconType;
     title: string;
     href: string;
-};
+}
 
 export function FeatureCard({ icon, title, href }: FeatureCardProps) {
     return (

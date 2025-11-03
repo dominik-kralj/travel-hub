@@ -23,9 +23,9 @@ import { updateCountry } from '../actions';
 import { useCountries } from '@/app/hooks/useCountries';
 import { Error } from '@/models/Error';
 
-type EditCountryModalProps = {
+interface EditCountryModalProps {
     country: Country;
-};
+}
 
 export default function EditCountryModal({ country }: EditCountryModalProps) {
     const { open, onClose, onOpen } = useDisclosure();

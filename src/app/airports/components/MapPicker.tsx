@@ -3,12 +3,12 @@
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import { useState } from 'react';
 
-type MapPickerProps = {
+interface MapPickerProps {
     lat: number;
     lng: number;
     setLat: (val: number) => void;
     setLng: (val: number) => void;
-};
+}
 
 const containerStyle = {
     width: '100%',

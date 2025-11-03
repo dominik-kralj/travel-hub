@@ -27,9 +27,9 @@ import { MapPicker } from './MapPicker';
 import { useCountries } from '@/app/hooks/useCountries';
 import { MdEdit } from 'react-icons/md';
 
-type EditAirportModalProps = {
+interface EditAirportModalProps {
     airport: Airport;
-};
+}
 
 export default function EditAirportModal({ airport }: EditAirportModalProps) {
     const { open, onOpen, onClose } = useDisclosure();

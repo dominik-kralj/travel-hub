@@ -23,9 +23,9 @@ import { Toaster, toaster } from '@/components/chakra-ui/toaster';
 import { Airport } from '@/models/Airport';
 import { Error } from '@/models/Error';
 
-type DeleteAirportModalProps = {
+interface DeleteAirportModalProps {
     airport: Airport;
-};
+}
 
 export default function DeleteAirportModal({ airport }: DeleteAirportModalProps) {
     const { open, onOpen, onClose } = useDisclosure();

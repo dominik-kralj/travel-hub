@@ -1,18 +1,15 @@
 'use client';
 
 import { Box, Heading, Text, Flex } from '@chakra-ui/react';
+
 import EditCountryModal from './EditCountryModal';
 import DeleteCountryDialog from './DeleteCountryModal';
 
-type Country = {
-    id: number;
-    name: string;
-    code: string;
-};
+import { Country } from '@/models/Country';
 
-type CountryCardProps = {
+interface CountryCardProps {
     country: Country;
-};
+}
 
 export default function CountryCard({ country }: CountryCardProps) {
     return (
@@ -29,6 +26,7 @@ export default function CountryCard({ country }: CountryCardProps) {
                     <Heading size="sm" mb={2}>
                         {country.name}
                     </Heading>
+
                     <Text fontSize="sm" color="gray.600">
                         Code: {country.code}
                     </Text>

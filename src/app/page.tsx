@@ -1,8 +1,9 @@
 'use client';
 
 import { FeatureCard } from '@/components/ui/FeatureCard';
+import Footer from '@/components/ui/Footer';
 import { Box, Heading, Text, Flex, Stack, Container } from '@chakra-ui/react';
-import { MdFlight, MdPublic, MdMap, MdAddLocation, MdCopyright } from 'react-icons/md';
+import { MdFlight, MdPublic, MdMap, MdAddLocation } from 'react-icons/md';
 
 export default function Home() {
     return (
@@ -59,18 +60,7 @@ export default function Home() {
                 </Stack>
             </Container>
 
-            <Flex
-                as="footer"
-                py={6}
-                align="center"
-                justifyContent="center"
-                gap={1}
-                fontSize="sm"
-                mt="auto"
-            >
-                <MdCopyright style={{ display: 'inline', verticalAlign: 'middle' }} />
-                {new Date().getFullYear()} Travel Hub. All rights reserved.
-            </Flex>
+            <Footer />
         </Flex>
     );
 }

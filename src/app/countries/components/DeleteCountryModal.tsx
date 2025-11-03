@@ -19,9 +19,9 @@ import { deleteCountry } from '../actions';
 import { useCountries } from '@/app/hooks/useCountries';
 import { Error } from '@/models/Error';
 
-type DeleteCountryModalProps = {
+interface DeleteCountryModalProps {
     country: Country;
-};
+}
 
 export default function DeleteCountryModal({ country }: DeleteCountryModalProps) {
     const { open, onOpen, onClose } = useDisclosure();
