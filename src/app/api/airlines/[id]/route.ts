@@ -1,15 +1,17 @@
 import { NextResponse } from 'next/server';
-import { AirlineSchema } from '@/models/Airline';
 import { prisma } from '@/lib/prisma';
+import { AirlineSchema } from '@/models/Airline';
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = parseInt(params.id);
+        const { id } = await params;
+        const airlineId = parseInt(id);
+
         const body = await request.json();
         const parsed = AirlineSchema.parse(body);
 
         const airline = await prisma.airline.update({
-            where: { id },
+            where: { id: airlineId },
             data: {
                 name: parsed.name,
                 countryId: parsed.countryId,
@@ -37,12 +39,13 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = parseInt(params.id);
+        const { id } = await params;
+        const airlineId = parseInt(id);
 
         await prisma.airline.delete({
-            where: { id },
+            where: { id: airlineId },
         });
 
         return NextResponse.json({ success: true });

@@ -4,12 +4,16 @@ import { Airport } from '@/models/Airport';
 import { Select, createListCollection } from '@chakra-ui/react';
 
 interface AirportMultiSelectProps {
-    data: Airport[];
+    data?: Airport[];
     value: number[];
     onChange: (value: number[]) => void;
 }
 
-export default function AirportMultiSelect({ data, value, onChange }: AirportMultiSelectProps) {
+export default function AirportMultiSelect({
+    data = [],
+    value,
+    onChange,
+}: AirportMultiSelectProps) {
     const airports = createListCollection({
         items:
             data?.map((airport) => ({

@@ -12,7 +12,7 @@ type Column<T> = {
 };
 
 type DataTableProps<T> = {
-    data: T[];
+    data?: T[];
     columns: Column<T>[];
     pageSize?: number;
     isLoading?: boolean;
@@ -21,7 +21,7 @@ type DataTableProps<T> = {
     actions?: ReactNode;
 };
 
-export default function DataTable<T>({ data, columns, pageSize = 10 }: DataTableProps<T>) {
+export default function DataTable<T>({ data = [], columns, pageSize = 10 }: DataTableProps<T>) {
     const [page, setPage] = useState(1);
 
     const total = data?.length;

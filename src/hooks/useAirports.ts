@@ -6,5 +6,5 @@ import { fetcher } from '../lib/fetcher';
 
 export function useAirports() {
     const { data, error, isLoading, mutate } = useSWR<Airport[]>('/api/airports', fetcher);
-    return { data: data ?? [], isLoading, error, mutate };
+    return { data: data, isLoading, error, mutate };
 }

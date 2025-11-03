@@ -4,12 +4,12 @@ import { Country } from '@/models/Country';
 import { Combobox, useFilter, useListCollection } from '@chakra-ui/react';
 
 interface CountrySelectProps {
-    data: Country[];
+    data?: Country[];
     value?: string;
     onChange?: (value: string) => void;
 }
 
-export const CountrySelect = ({ data, value, onChange }: CountrySelectProps) => {
+export const CountrySelect = ({ data = [], value, onChange }: CountrySelectProps) => {
     const { contains } = useFilter({ sensitivity: 'base' });
 
     const countries =
