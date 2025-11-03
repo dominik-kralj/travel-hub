@@ -4,7 +4,6 @@ import { Box, Heading, Text, Flex } from '@chakra-ui/react';
 
 import EditCountryModal from './EditCountryModal';
 import DeleteCountryDialog from './DeleteCountryModal';
-
 import { Country } from '@/models/Country';
 
 interface CountryCardProps {

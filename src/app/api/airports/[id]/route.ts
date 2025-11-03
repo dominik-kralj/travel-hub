@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { AirportSchema } from '@/models/Airport';
+import { NextResponse } from 'next/server';
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
     try {

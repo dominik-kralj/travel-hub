@@ -5,10 +5,10 @@ import { AbsoluteCenter, Flex, Spinner, Text } from '@chakra-ui/react';
 import AddAirportModal from './components/AddAirportModal';
 import EditAirportModal from './components/EditAirportModal';
 import DeleteAirportModal from './components/DeleteAirportModal';
-import DataTable from '@/components/ui/DataTable';
-
-import { useAirports } from '@/app/hooks/useAirports';
 import { CrudPageLayout } from '@/components/ui/CrudPageLayout';
+import DataTable from '@/components/ui/DataTable';
+import { useAirports } from '@/hooks/useAirports';
+import { Toaster } from '@/components/chakra-ui/toaster';
 
 export default function AirportsPage() {
     const { data, isLoading, error } = useAirports();
@@ -30,31 +30,34 @@ export default function AirportsPage() {
     }
 
     return (
-        <CrudPageLayout title="Airports" actions={<AddAirportModal />}>
-            <DataTable
-                data={data}
-                columns={[
-                    { header: 'Name', cell: (row) => row.name },
-                    { header: 'IATA', cell: (row) => row.iata.toUpperCase() },
-                    { header: 'ICAO', cell: (row) => row.icao.toUpperCase() },
-                    { header: 'Latitude', cell: (row) => row.latitude },
-                    { header: 'Longitude', cell: (row) => row.longitude },
-                    {
-                        header: 'Country',
-                        cell: (row) => row.country?.name ?? '-',
-                    },
-                    {
-                        header: 'Actions',
-                        cell: (row) => (
-                            <Flex justify="flex-end" align="center" gap={2}>
-                                <EditAirportModal airport={row} />
-                                <DeleteAirportModal airport={row} />
-                            </Flex>
-                        ),
-                        textAlign: 'right',
-                    },
-                ]}
-            />
-        </CrudPageLayout>
+        <>
+            <CrudPageLayout title="Airports" actions={<AddAirportModal />}>
+                <DataTable
+                    data={data}
+                    columns={[
+                        { header: 'Name', cell: (row) => row.name },
+                        { header: 'IATA', cell: (row) => row.iata?.toUpperCase() },
+                        { header: 'ICAO', cell: (row) => row.icao.toUpperCase() },
+                        { header: 'Latitude', cell: (row) => row.latitude },
+                        { header: 'Longitude', cell: (row) => row.longitude },
+                        {
+                            header: 'Country',
+                            cell: (row) => row.country?.name ?? '-',
+                        },
+                        {
+                            header: 'Actions',
+                            cell: (row) => (
+                                <Flex justify="flex-end" align="center" gap={2}>
+                                    <EditAirportModal airport={row} />
+                                    <DeleteAirportModal airport={row} />
+                                </Flex>
+                            ),
+                            textAlign: 'right',
+                        },
+                    ]}
+                />
+            </CrudPageLayout>
+            <Toaster />
+        </>
     );
 }

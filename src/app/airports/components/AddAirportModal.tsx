@@ -19,17 +19,13 @@ import {
 
 import { createAirport } from '../actions';
 
-import { useCountries } from '@/app/hooks/useCountries';
-import { useAirports } from '@/app/hooks/useAirports';
-import { useCurrentPosition } from '@/app/hooks/useCurrentPosition';
-
-import { Toaster, toaster } from '@/components/chakra-ui/toaster';
-
-import { AirportDTO, AirportSchema } from '@/models/Airport';
-import { Error } from '@/models/Error';
-
 import { CountrySelect } from './CountrySelect';
 import { MapPicker } from './MapPicker';
+import { toaster } from '@/components/chakra-ui/toaster';
+import { useAirports } from '@/hooks/useAirports';
+import { useCountries } from '@/hooks/useCountries';
+import { useCurrentPosition } from '@/hooks/useCurrentPosition';
+import { AirportDTO, AirportSchema } from '@/models/Airport';
 
 export default function AddAirportModal() {
     const { open, onOpen, onClose } = useDisclosure();
@@ -266,7 +262,6 @@ export default function AddAirportModal() {
                     </Dialog.Content>
                 </Dialog.Positioner>
             </Portal>
-            <Toaster />
         </Dialog.Root>
     );
 }

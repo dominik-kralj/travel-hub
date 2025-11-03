@@ -14,14 +14,10 @@ import {
 
 import { MdDelete } from 'react-icons/md';
 
-import { useAirports } from '@/app/hooks/useAirports';
-
 import { deleteAirport } from '../actions';
-
-import { Toaster, toaster } from '@/components/chakra-ui/toaster';
-
+import { toaster } from '@/components/chakra-ui/toaster';
+import { useAirports } from '@/hooks/useAirports';
 import { Airport } from '@/models/Airport';
-import { Error } from '@/models/Error';
 
 interface DeleteAirportModalProps {
     airport: Airport;
@@ -101,7 +97,6 @@ export default function DeleteAirportModal({ airport }: DeleteAirportModalProps)
                     </Dialog.Content>
                 </Dialog.Positioner>
             </Portal>
-            <Toaster />
         </Dialog.Root>
     );
 }

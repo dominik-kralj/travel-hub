@@ -16,10 +16,9 @@ import {
 import { useTransition } from 'react';
 
 import { CountryDTO, CountrySchema } from '@/models/Country';
-import { Toaster, toaster } from '@/components/chakra-ui/toaster';
+import { toaster } from '@/components/chakra-ui/toaster';
+import { useCountries } from '@/hooks/useCountries';
 import { createCountry } from '../actions';
-import { useCountries } from '@/app/hooks/useCountries';
-import { Error } from '@/models/Error';
 
 export default function AddCountryModal() {
     const { open, onOpen, onClose } = useDisclosure();
@@ -133,8 +132,6 @@ export default function AddCountryModal() {
                     </Dialog.Content>
                 </Dialog.Positioner>
             </Portal>
-
-            <Toaster />
         </Dialog.Root>
     );
 }

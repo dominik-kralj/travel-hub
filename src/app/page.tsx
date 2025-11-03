@@ -1,7 +1,7 @@
 'use client';
 
-import { FeatureCard } from '@/components/ui/FeatureCard';
-import Footer from '@/components/ui/Footer';
+import { FeatureCard } from '../components/ui/FeatureCard';
+import Footer from '../components/ui/Footer';
 import { Box, Heading, Text, Flex, Stack, Container } from '@chakra-ui/react';
 import { MdFlight, MdPublic, MdMap, MdAddLocation } from 'react-icons/md';
 

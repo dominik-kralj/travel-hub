@@ -31,31 +31,32 @@ model Airport {
 }
 
 model Airline {
-  id   Int    @id @default(autoincrement())
-  name String
-  code String @unique @default("TEMP_CODE")
-
-  airports  AirlinesOnAirports[]
-  Country   Country?             @relation(fields: [countryId], references: [id])
-  countryId Int?
+  id                  Int                     @id @default(autoincrement())
+  name                String
+  countryId           Int
+  country             Country                 @relation(fields: [countryId], references: [id])
+  airlinesOnAirports  AirlinesOnAirports[]
+  routes              Route[]
 }
 
 model AirlinesOnAirports {
-  id        Int @id @default(autoincrement())
   airlineId Int
   airportId Int
+  airline   Airline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+  airport   Airport @relation(fields: [airportId], references: [id], onDelete: Cascade)
 
-  airline Airline @relation(fields: [airlineId], references: [id])
-  airport Airport @relation(fields: [airportId], references: [id])
-
-  @@unique([airlineId, airportId])
+  @@id([airlineId, airportId])
 }
 
 model Route {
-  id            Int @id @default(autoincrement())
-  fromAirportId Int
-  toAirportId   Int
+  id              Int      @id @default(autoincrement())
+  fromAirportId   Int
+  toAirportId     Int
+  airlineId       Int
 
-  fromAirport Airport @relation("RoutesFrom", fields: [fromAirportId], references: [id])
-  toAirport   Airport @relation("RoutesTo", fields: [toAirportId], references: [id])
+  fromAirport     Airport  @relation("RoutesFrom", fields: [fromAirportId], references: [id])
+  toAirport       Airport  @relation("RoutesTo", fields: [toAirportId], references: [id])
+  airline         Airline  @relation(fields: [airlineId], references: [id])
+
+  @@unique([fromAirportId, toAirportId, airlineId])
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import { Combobox, useFilter, useListCollection } from '@chakra-ui/react';
 import { Country } from '@/models/Country';
+import { Combobox, useFilter, useListCollection } from '@chakra-ui/react';
 
 interface CountrySelectProps {
     data: Country[];

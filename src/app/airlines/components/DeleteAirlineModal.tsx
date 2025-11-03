@@ -1,47 +1,47 @@
 'use client';
 
+import { useTransition } from 'react';
 import {
     Button,
     Dialog,
     Portal,
-    CloseButton,
-    Text,
-    useDisclosure,
-    IconButton,
     DialogOpenChangeDetails,
+    IconButton,
+    CloseButton,
+    useDisclosure,
 } from '@chakra-ui/react';
 import { MdDelete } from 'react-icons/md';
-import { useTransition } from 'react';
 
-import { deleteCountry } from '../actions';
+import { deleteAirline } from '../actions';
 
-import { Country } from '@/models/Country';
+import { Airline } from '@/models/Airline';
 import { toaster } from '@/components/chakra-ui/toaster';
-import { useCountries } from '@/hooks/useCountries';
+import { useAirlines } from '@/hooks/useAirlines';
 
-interface DeleteCountryModalProps {
-    country: Country;
+interface DeleteAirlineModalProps {
+    airline: Airline;
 }
 
-export default function DeleteCountryModal({ country }: DeleteCountryModalProps) {
+export default function DeleteAirlineModal({ airline }: DeleteAirlineModalProps) {
     const { open, onOpen, onClose } = useDisclosure();
-    const { mutate } = useCountries();
-
+    const { mutate } = useAirlines();
     const [isPending, startTransition] = useTransition();
 
     const handleDelete = () => {
         startTransition(async () => {
             try {
-                await deleteCountry(country.id);
+                await deleteAirline(airline.id);
                 await mutate();
+
                 toaster.create({
-                    title: 'Country deleted successfully!',
+                    title: 'Airline deleted successfully!',
                     type: 'success',
                 });
+
                 onClose();
             } catch (error: unknown) {
                 toaster.create({
-                    title: (error as Error) || 'Failed to delete country!',
+                    title: (error as Error)?.message || 'Failed to delete airline!',
                     type: 'error',
                 });
             }
@@ -59,7 +59,12 @@ export default function DeleteCountryModal({ country }: DeleteCountryModalProps)
     return (
         <Dialog.Root open={open} onOpenChange={handleOpenChange} placement="center">
             <Dialog.Trigger asChild>
-                <IconButton aria-label="Delete country" size="sm" variant="ghost" color="red.500">
+                <IconButton
+                    aria-label="Delete airline"
+                    size="sm"
+                    variant="ghost"
+                    colorPalette="red"
+                >
                     <MdDelete />
                 </IconButton>
             </Dialog.Trigger>
@@ -73,13 +78,10 @@ export default function DeleteCountryModal({ country }: DeleteCountryModalProps)
                             <CloseButton size="sm" />
                         </Dialog.CloseTrigger>
 
-                        <Dialog.Header>Delete Country</Dialog.Header>
+                        <Dialog.Header>Delete Airline</Dialog.Header>
 
                         <Dialog.Body>
-                            <Text>
-                                Are you sure you want to delete <strong>{country.name}</strong>?
-                                This action cannot be undone.
-                            </Text>
+                            Are you sure you want to delete <strong>{airline.name}</strong>?
                         </Dialog.Body>
 
                         <Dialog.Footer>
@@ -87,12 +89,7 @@ export default function DeleteCountryModal({ country }: DeleteCountryModalProps)
                                 <Button variant="outline">Cancel</Button>
                             </Dialog.ActionTrigger>
 
-                            <Button
-                                colorPalette="red"
-                                onClick={handleDelete}
-                                loading={isPending}
-                                disabled={isPending}
-                            >
+                            <Button colorPalette="red" onClick={handleDelete} loading={isPending}>
                                 Delete
                             </Button>
                         </Dialog.Footer>

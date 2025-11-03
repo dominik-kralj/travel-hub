@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { geistMono, geistSans } from './utils/fonts';
+import { geistMono, geistSans } from '../utils/fonts';
 import { Providers } from './Providers';
 
 export const metadata: Metadata = {

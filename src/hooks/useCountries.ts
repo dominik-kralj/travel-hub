@@ -1,5 +1,5 @@
-import { fetcher } from '@/lib/fetcher';
-import { Country } from '@/models/Country';
+import { fetcher } from '../lib/fetcher';
+import { Country } from '../models/Country';
 import useSWR from 'swr';
 
 export function useCountries() {

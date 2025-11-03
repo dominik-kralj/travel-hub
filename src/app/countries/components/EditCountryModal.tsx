@@ -17,11 +17,11 @@ import {
 import { useTransition } from 'react';
 import { MdEdit } from 'react-icons/md';
 
-import { Toaster, toaster } from '@/components/chakra-ui/toaster';
-import { Country, CountryDTO, CountrySchema } from '@/models/Country';
 import { updateCountry } from '../actions';
-import { useCountries } from '@/app/hooks/useCountries';
-import { Error } from '@/models/Error';
+
+import { Country, CountryDTO, CountrySchema } from '@/models/Country';
+import { toaster } from '@/components/chakra-ui/toaster';
+import { useCountries } from '@/hooks/useCountries';
 
 interface EditCountryModalProps {
     country: Country;
@@ -111,11 +111,13 @@ export default function EditCountryModal({ country }: EditCountryModalProps) {
                                     <Field.Root invalid={!!errors.code && touchedFields.code}>
                                         <Field.Label>Country Code</Field.Label>
                                         <Input {...register('code')} textTransform="uppercase" />
+
                                         <Field.ErrorText minH="20px">
                                             {errors.code && touchedFields.code
                                                 ? errors.code.message
                                                 : ' '}
                                         </Field.ErrorText>
+
                                         <Field.HelperText>
                                             2-3 character country code (ISO format)
                                         </Field.HelperText>
@@ -141,8 +143,6 @@ export default function EditCountryModal({ country }: EditCountryModalProps) {
                     </Dialog.Content>
                 </Dialog.Positioner>
             </Portal>
-
-            <Toaster />
         </Dialog.Root>
     );
 }

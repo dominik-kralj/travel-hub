@@ -17,15 +17,16 @@ import {
     IconButton,
 } from '@chakra-ui/react';
 
-import { Toaster, toaster } from '@/components/chakra-ui/toaster';
-import { updateAirport } from '../actions';
-import { useAirports } from '@/app/hooks/useAirports';
-import { AirportDTO, AirportSchema, Airport } from '@/models/Airport';
-import { Error } from '@/models/Error';
 import { CountrySelect } from './CountrySelect';
 import { MapPicker } from './MapPicker';
-import { useCountries } from '@/app/hooks/useCountries';
+
 import { MdEdit } from 'react-icons/md';
+import { toaster } from '@/components/chakra-ui/toaster';
+import { useAirports } from '@/hooks/useAirports';
+import { Airport, AirportDTO, AirportSchema } from '@/models/Airport';
+
+import { updateAirport } from '../actions';
+import { useCountries } from '@/hooks/useCountries';
 
 interface EditAirportModalProps {
     airport: Airport;
@@ -95,7 +96,6 @@ export default function EditAirportModal({ airport }: EditAirportModalProps) {
             });
         } else {
             onClose();
-            reset();
         }
     };
 
@@ -268,7 +268,6 @@ export default function EditAirportModal({ airport }: EditAirportModalProps) {
                     </Dialog.Content>
                 </Dialog.Positioner>
             </Portal>
-            <Toaster />
         </Dialog.Root>
     );
 }
