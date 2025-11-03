@@ -2,10 +2,11 @@ import { prisma } from '@/lib/prisma';
 import { AirportSchema } from '@/models/Airport';
 import { NextResponse } from 'next/server';
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         const airport = await prisma.airport.findUnique({
-            where: { id: Number(params.id) },
+            where: { id: Number(id) },
             include: { country: true },
         });
         if (!airport) {
@@ -18,13 +19,14 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
     }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         const body = await request.json();
         const parsed = AirportSchema.parse(body);
 
         const updated = await prisma.airport.update({
-            where: { id: Number(params.id) },
+            where: { id: Number(id) },
             data: parsed,
         });
 
@@ -35,9 +37,10 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        await prisma.airport.delete({ where: { id: Number(params.id) } });
+        const { id } = await params;
+        await prisma.airport.delete({ where: { id: Number(id) } });
         return NextResponse.json({ message: 'Airport deleted successfully' });
     } catch (error) {
         console.error('[DELETE /airports/:id] Error:', error);

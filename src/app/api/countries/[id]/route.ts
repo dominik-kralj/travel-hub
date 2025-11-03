@@ -2,10 +2,11 @@ import { prisma } from '@/lib/prisma';
 import { CountrySchema } from '@/models/Country';
 import { NextResponse } from 'next/server';
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         const country = await prisma.country.findUnique({
-            where: { id: Number(params.id) },
+            where: { id: Number(id) },
         });
         if (!country) {
             return NextResponse.json({ error: 'Country not found' }, { status: 404 });
@@ -17,13 +18,14 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
     }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         const body = await request.json();
         const parsed = CountrySchema.parse(body);
 
         const updated = await prisma.country.update({
-            where: { id: Number(params.id) },
+            where: { id: Number(id) },
             data: parsed,
         });
 
@@ -34,9 +36,10 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        await prisma.country.delete({ where: { id: Number(params.id) } });
+        const { id } = await params;
+        await prisma.country.delete({ where: { id: Number(id) } });
         return NextResponse.json({ message: 'Country deleted successfully' });
     } catch (error) {
         console.error('[DELETE /countries/:id] Error:', error);
