@@ -52,3 +52,12 @@ Open [http://localhost:3000](http://localhost:3000)
 ## Time Spent
 
 Approximately **12-14 hours** total
+
+## Future Improvements
+
+- Authentication and authorization
+- Server-side pagination and sorting
+- Better error handling and user feedback
+- Advanced search and filtering
+- Design system improvements
+- Testing coverage
