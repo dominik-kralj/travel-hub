@@ -59,5 +59,6 @@ Approximately **12-14 hours** total
 - Server-side pagination and sorting
 - Better error handling and user feedback
 - Advanced search and filtering
-- Design system improvements
+- Design system and styling improvements
 - Testing coverage
+- Migrate to PostgreSQL for production deployment
