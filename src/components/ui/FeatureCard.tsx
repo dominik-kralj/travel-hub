@@ -7,9 +7,10 @@ interface FeatureCardProps {
     icon: IconType;
     title: string;
     href: string;
+    count: number;
 }
 
-export function FeatureCard({ icon, title, href }: FeatureCardProps) {
+export function FeatureCard({ icon, title, href, count = 0 }: FeatureCardProps) {
     return (
         <LinkBox
             as="article"
@@ -30,6 +31,10 @@ export function FeatureCard({ icon, title, href }: FeatureCardProps) {
                     <Icon as={icon} boxSize={10} color="blue.400" mb={4} />
 
                     <Text fontWeight="bold">{title}</Text>
+
+                    <Text fontSize="2xl" fontWeight="bold" color="blue.500">
+                        {count}
+                    </Text>
                 </Flex>
             </LinkOverlay>
         </LinkBox>

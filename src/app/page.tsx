@@ -1,11 +1,48 @@
 'use client';
 
+import { useAirlines } from '@/hooks/useAirlines';
+import { useAirports } from '@/hooks/useAirports';
+import { useCountries } from '@/hooks/useCountries';
+import { useRoutes } from '@/hooks/useRoutes';
 import { FeatureCard } from '../components/ui/FeatureCard';
 import Footer from '../components/ui/Footer';
-import { Box, Heading, Text, Flex, Stack, Container } from '@chakra-ui/react';
+import {
+    Box,
+    Heading,
+    Text,
+    Flex,
+    Stack,
+    Container,
+    Spinner,
+    AbsoluteCenter,
+} from '@chakra-ui/react';
 import { MdFlight, MdPublic, MdMap, MdAddLocation } from 'react-icons/md';
 
 export default function Home() {
+    const { data: countries, isLoading: loadingCountries, error: errorCountries } = useCountries();
+    const { data: airports, isLoading: loadingAirports, error: errorAirports } = useAirports();
+    const { data: airlines, isLoading: loadingAirlines, error: errorAirlines } = useAirlines();
+    const { data: routes, isLoading: loadingRoutes, error: errorRoutes } = useRoutes();
+
+    const isLoading = loadingCountries || loadingAirports || loadingAirlines || loadingRoutes;
+    const error = errorCountries || errorAirports || errorAirlines || errorRoutes;
+
+    if (isLoading) {
+        return (
+            <AbsoluteCenter>
+                <Spinner size="xl" color="blue" />
+            </AbsoluteCenter>
+        );
+    }
+
+    if (error) {
+        return (
+            <AbsoluteCenter>
+                <Text color="red">Error while fetching airports!</Text>
+            </AbsoluteCenter>
+        );
+    }
+
     return (
         <Flex direction="column" minH="100vh">
             <Box
@@ -38,13 +75,33 @@ export default function Home() {
                 </Heading>
 
                 <Flex gap={8} flexWrap="wrap" justify="center">
-                    <FeatureCard href="/countries" icon={MdPublic} title="Manage Countries" />
+                    <FeatureCard
+                        href="/countries"
+                        icon={MdPublic}
+                        title="Manage Countries"
+                        count={countries?.length ?? 0}
+                    />
 
-                    <FeatureCard href="/airports" icon={MdAddLocation} title="Manage Airports" />
+                    <FeatureCard
+                        href="/airports"
+                        icon={MdAddLocation}
+                        title="Manage Airports"
+                        count={airports?.length ?? 0}
+                    />
 
-                    <FeatureCard href="/airlines" icon={MdFlight} title="Manage Airlines" />
+                    <FeatureCard
+                        href="/airlines"
+                        icon={MdFlight}
+                        title="Manage Airlines"
+                        count={airlines.length ?? 0}
+                    />
 
-                    <FeatureCard href="/routes" icon={MdMap} title="Plan Routes" />
+                    <FeatureCard
+                        href="/routes"
+                        icon={MdMap}
+                        title="Plan Routes"
+                        count={routes?.length ?? 0}
+                    />
                 </Flex>
             </Container>
 
