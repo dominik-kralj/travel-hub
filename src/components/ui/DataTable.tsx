@@ -11,15 +11,11 @@ type Column<T> = {
     textAlign?: 'left' | 'center' | 'right';
 };
 
-type DataTableProps<T> = {
+interface DataTableProps<T> {
     data?: T[];
     columns: Column<T>[];
     pageSize?: number;
-    isLoading?: boolean;
-    error?: string | null;
-    title?: string;
-    actions?: ReactNode;
-};
+}
 
 export default function DataTable<T>({ data = [], columns, pageSize = 10 }: DataTableProps<T>) {
     const [page, setPage] = useState(1);
@@ -62,6 +58,7 @@ export default function DataTable<T>({ data = [], columns, pageSize = 10 }: Data
                         ))}
                     </Table.Row>
                 </Table.Header>
+
                 <Table.Body>
                     {paginated.map((row, i) => (
                         <Table.Row key={i} _hover={{ bg: 'gray.50' }}>
@@ -73,6 +70,7 @@ export default function DataTable<T>({ data = [], columns, pageSize = 10 }: Data
                         </Table.Row>
                     ))}
                 </Table.Body>
+
                 {pageCount > 1 && (
                     <Table.Footer>
                         <Table.Row>
@@ -87,9 +85,11 @@ export default function DataTable<T>({ data = [], columns, pageSize = 10 }: Data
                                     >
                                         <MdChevronLeft />
                                     </IconButton>
+
                                     <Text fontSize="sm" color="gray.600">
                                         Page {page} of {pageCount}
                                     </Text>
+
                                     <IconButton
                                         aria-label="Next page"
                                         size="sm"
